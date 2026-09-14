@@ -24,7 +24,7 @@
         <a href="#directory">All Projects</a>
       </nav>
       <div id="authNavSlot">
-        <button class="btn" onclick="openLoginModal()">Administrative Login</button>
+        <button class="btn" onclick="openLoginModal()">Login</button>
       </div>
     </div>
   </div>
@@ -393,13 +393,13 @@
 <div class="overlay" id="authOverlay" onclick="if(event.target===this)closeLoginModal()">
   <div class="auth-modal">
     <div class="auth-head">
-      <span class="eyebrow" style="color:rgba(255,255,255,0.7)">Restricted Portal</span>
+      <span class="eyebrow" style="color:rgba(255,255,255,0.7)"></span>
       <h3>Officer Session Login</h3>
     </div>
     <form class="auth-body" onsubmit="handleOfficerLogin(event)">
       <div>
-        <label for="auth_id">Officer ID / Badge Code</label>
-        <input type="text" id="auth_id" placeholder="e.g. OFF-8824" required autocomplete="username">
+        <label for="auth_id">Officer ID</label>
+        <input type="text" id="auth_id" required autocomplete="username">
       </div>
       <div>
         <label for="auth_dept">Department</label>
@@ -414,13 +414,13 @@
         </select>
       </div>
       <div>
-        <label for="auth_pin">Security PIN / Password</label>
-        <input type="password" id="auth_pin" placeholder="Enter PIN (Default: 2026)" required autocomplete="current-password">
+        <label for="auth_pin">Password</label>
+        <input type="password" id="auth_pin" placeholder="Enter Password" required autocomplete="current-password">
       </div>
       <div class="auth-msg" id="authError"></div>
       <div style="display:flex;gap:10px;margin-top:6px">
         <button type="button" class="btn ghost" style="flex:1" onclick="closeLoginModal()">Cancel</button>
-        <button type="submit" class="btn" style="flex:1" id="btnLoginSubmit">Verify &amp; Enter</button>
+        <button type="submit" class="btn" style="flex:1" id="btnLoginSubmit">Log in</button>
       </div>
     </form>
   </div>
