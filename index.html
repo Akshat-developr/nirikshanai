@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NIRIKSHANAI — Official Government Public Works Monitoring System</title>
+  <meta name="description" content="Official government monitoring system to verify public works, track treasury releases, and inspect field execution.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a href="#" class="brand"><div class="dot">N</div>NIRIKSHANAI</a>
+    <div class="nav-right">
+      <nav class="nav-links">
+        <a href="#query">Project Search</a>
+        <a href="#twin">Live Monitoring</a>
+        <a href="#calculator">Risk Calculator</a>
+        <a href="#portfolio">State Portfolios</a>
+        <a href="#directory">All Projects</a>
+      </nav>
+      <div id="authNavSlot">
+        <button class="btn" onclick="openLoginModal()">Administrative Login</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap">
+    <h1>National Work Inspection &amp;<br><span>Fund Administration System.</span></h1>
+    <p class="lead">Monitoring sanctioned development works, track treasury fund drawdowns, verify measurement book entries, and enforce statutory guidelines across all implementing departments.</p>
+    <div class="hero-cta">
+      <a class="btn" href="#query">Review Sanction Records</a>
+      <a class="btn" style="background:var(--blue)" href="#calculator">Manual Risk Calculator</a>
+      <a class="btn ghost" href="#directory">Open Works Register</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat" onclick="filterByStat('all')">
+        <b class="count" id="stat_works" data-to="15">15</b>
+        <div class="k">Sanctioned Works</div>
+        <div class="s">Active across all administrative blocks</div>
+      </div>
+      <div class="stat" onclick="filterByStat('all')">
+        <b>₹<span class="count" id="stat_outlay" data-to="749">749</span> Cr</b>
+        <div class="k">Total Sanctioned Outlay</div>
+        <div class="s">Budget allocation</div>
+      </div>
+      <div class="stat" onclick="filterByStat('high')">
+        <b class="count" id="stat_flagged" data-to="8" style="color:var(--red)">8</b>
+        <div class="k">Flagged for Our Review</div>
+        <div class="s">Click to filter review cases</div>
+      </div>
+      <div class="stat" onclick="filterByStat('all')">
+        <b class="count" id="stat_states" data-to="12">12</b>
+        <div class="k">States &amp; Union Territories</div>
+        <div class="s">Under active departmental tracking</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INTERNAL SEARCH SECTION -->
+<section id="query" style="background:var(--soft)">
+  <div class="wrap">
+    <div class="sechead reveal">
+      <span class="eyebrow">Internal Department Search</span>
+      <h2>Interrogate Sanction &amp; Works Database</h2>
+      <p class="lead">Execute rapid searches across sanction records, audit trails, and financial releases.</p>
+    </div>
+
+    <div class="search-container reveal">
+      <div class="qbox">
+        <div class="qtop">
+          <input id="q" placeholder="Enter Work Code (e.g. NK-2026-01), Agency, Contractor, or District..." onkeydown="if(event.key==='Enter')ask()">
+          <button class="btn" onclick="ask()">Search</button>
+        </div>
+        <div class="ans" id="ans">
+          <p class="typing">Awaiting input. Use the search bar or select from recent history and suggested searches.</p>
+        </div>
+      </div>
+
+      <div class="search-sidebar">
+        <div class="side-card">
+          <div class="side-card-head">
+            <span>Recent Search History</span>
+            <span class="clear-link" onclick="clearHistory()">Clear</span>
+          </div>
+          <div class="item-list" id="historyList">
+            <span style="font-size:12.5px;color:var(--mute)">No recent searches logged.</span>
+          </div>
+        </div>
+
+        <div class="side-card">
+          <div class="side-card-head">
+            <span>Suggested Searches</span>
+          </div>
+          <div class="item-list" id="suggestedList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE SITE CHECK -->
+<section id="twin">
+  <div class="wrap">
+    <div class="sechead reveal">
+      <span class="eyebrow">On-Site Progress &amp; Payment Verification</span>
+      <h2>Live Status Check: Funds Paid vs. Work Completed</h2>
+      <p class="lead">Comparing payments directly against field measurements. Select any project below to inspect its live data.</p>
+    </div>
+
+    <div class="live-selector-bar reveal">
+      <div class="live-selector-left">
+        <label for="liveProjectSelect">Active Project:</label>
+        <select id="liveProjectSelect" onchange="switchLiveProject(this.value)"></select>
+      </div>
+      <div class="live-quick-pills" id="quickPillsContainer"></div>
+    </div>
+
+    <div class="grid2" id="liveMonitorContainer"></div>
+  </div>
+</section>
+
+<!-- MANUAL PROJECT ENTRY & RISK CALCULATOR SECTION -->
+<section id="calculator" style="background:var(--soft)">
+  <div class="wrap">
+    <div class="sechead reveal">
+      <span class="eyebrow">Project Check &amp; Risk Calculator</span>
+      <h2>Check Project Risk &amp; Performance</h2>
+      <p class="lead">Enter project numbers below to compare money paid against verified ground work and permanently save records to the central register.</p>
+    </div>
+
+    <div class="calc-grid reveal">
+      <!-- Input Form -->
+      <div class="form-card">
+        <h3 style="margin-bottom:18px">Project Details &amp; Site Data</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="m_id">Project ID / Code</label>
+            <input type="text" id="m_id" value="NK-2026-16" placeholder="e.g. NK-2026-16">
+          </div>
+          <div class="form-group">
+            <label for="m_name">Project Name / Description</label>
+            <input type="text" id="m_name" value="Community Health & Training Centre" placeholder="e.g. Village Drinking Water Scheme">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="m_state">State / UT</label>
+            <select id="m_state" onchange="updateCalcDistricts()">
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Uttar Pradesh">Uttar Pradesh</option>
+              <option value="Rajasthan">Rajasthan</option>
+              <option value="Punjab">Punjab</option>
+              <option value="Telangana">Telangana</option>
+              <option value="Tamil Nadu">Tamil Nadu</option>
+              <option value="Gujarat">Gujarat</option>
+              <option value="Himachal Pradesh">Himachal Pradesh</option>
+              <option value="Odisha">Odisha</option>
+              <option value="West Bengal">West Bengal</option>
+              <option value="Madhya Pradesh">Madhya Pradesh</option>
+              <option value="Haryana">Haryana</option>
+              <option value="Bihar">Bihar</option>
+              <option value="Kerala">Kerala</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="m_district">District</label>
+            <select id="m_district"></select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="m_agency">Government Department</label>
+            <select id="m_agency">
+              <option>PWD</option>
+              <option>NHAI</option>
+              <option>PHED</option>
+              <option>H&amp;FW</option>
+              <option>FCI</option>
+              <option>BRO</option>
+              <option>WRD</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="m_contractor">Selected Contractor / Builder</label>
+            <input type="text" id="m_contractor" value="Apex Infra Ltd" placeholder="Contractor name">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="m_outlay">Approved Budget (₹ Cr)</label>
+            <input type="number" id="m_outlay" value="45.0" step="0.5" min="1" oninput="computeRisk()">
+          </div>
+          <div class="form-group">
+            <label for="m_cost">Cost Difference vs Govt Rate (%)</label>
+            <input type="number" id="m_cost" value="15.0" step="0.5" oninput="computeRisk()">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="m_phys">Actual Work Completed On Site (%)</label>
+            <input type="number" id="m_phys" value="35" min="0" max="100" oninput="computeRisk()">
+          </div>
+          <div class="form-group">
+            <label for="m_fin">Total Money Paid Out (%)</label>
+            <input type="number" id="m_fin" value="80" min="0" max="100" oninput="computeRisk()">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="m_bidders">Number of Bidders (Companies)</label>
+            <input type="number" id="m_bidders" value="1" min="1" max="12" oninput="computeRisk()">
+          </div>
+          <div class="form-group">
+            <label for="m_uc">Spending Proof Certificate (UC)</label>
+            <select id="m_uc" onchange="computeRisk()">
+              <option value="Overdue">Overdue (Pending Submission)</option>
+              <option value="Filed">Submitted &amp; Approved</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:16px">
+          <button class="btn" style="flex:1" onclick="computeRisk()">Check Risk Score</button>
+          <button class="btn" style="flex:1;background:var(--green)" id="btnSaveRecord" onclick="appendManualToRegister()">Permanently Save to Database</button>
+        </div>
+      </div>
+
+      <!-- Live Calculation Output Dossier -->
+      <div class="result-card">
+        <div>
+          <span class="eyebrow">Project Assessment Summary</span>
+          <div class="score-hero">
+            <div>
+              <div class="score-val" id="res_score">--</div>
+              <div style="font-size:12px;font-weight:600;color:var(--mute);margin-top:4px">OVERALL RISK SCORE (0 to 100)</div>
+            </div>
+            <div id="res_badge"></div>
+          </div>
+
+          <div class="kv" style="margin-bottom:16px">
+            <div><span>Payment vs Work Done Gap</span><b id="res_gap">--</b></div>
+            <div><span>Extra Money Paid Ahead of Work</span><b id="res_exposure">--</b></div>
+            <div><span>Total Approved Budget</span><b id="res_outlay">--</b></div>
+            <div><span>Payment vs Verified Work</span><b id="res_progress">--</b></div>
+          </div>
+
+          <span class="eyebrow" style="margin-bottom:8px">Rule Compliance &amp; Warning Flags</span>
+          <div id="res_flags"></div>
+        </div>
+
+        <div style="margin-top:20px;padding:14px;background:var(--soft);border-radius:8px;border:1px solid var(--line)">
+          <span class="eyebrow" style="color:var(--navy)">Recommended Action for Officers</span>
+          <p id="res_advice" style="font-size:13px;color:var(--ink);margin-top:4px"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATE MONITORING (3 CARDS PER PAGE) -->
+<section id="portfolio">
+  <div class="wrap">
+    <div class="sechead reveal">
+      <span class="eyebrow">State &amp; Union Territory Portfolios</span>
+      <h2>State &amp; Union Territory Works Directory</h2>
+      <p class="lead">Active works, allocated funds, and open audit exceptions across all state nodal departments.</p>
+    </div>
+
+    <div class="jurisdiction-filter-bar reveal">
+      <div class="jurisdiction-input-wrap">
+        <input id="stateSearchInput" placeholder="Search State or Union Territory (e.g. Maharashtra, Uttar Pradesh, Rajasthan)..." oninput="filterStateCards()">
+      </div>
+      <div class="jurisdiction-meta">
+        <span id="stateMatchCount"></span>
+      </div>
+    </div>
+
+    <div class="grid3" id="stateGrid"></div>
+
+    <div class="tinfo" style="margin-top:20px">
+      <span id="statePageInfo" class="mono" style="font-size:13px;color:var(--mute)">Showing 1–3</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="btn ghost" id="btnPrevState" style="padding:6px 14px;font-size:12px" onclick="changeStatePage(-1)">← Previous</button>
+        <span id="statePageIndicator" class="mono" style="font-weight:600;font-size:13px">Page 1 of 5</span>
+        <button class="btn ghost" id="btnNextState" style="padding:6px 14px;font-size:12px" onclick="changeStatePage(1)">Next →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MASTER REGISTER (5 ROWS PER PAGE) -->
+<section id="directory" style="background:var(--soft)">
+  <div class="wrap">
+    <div class="sechead reveal">
+      <span class="eyebrow">All Projects List (Master Register)</span>
+      <h2>Our Master Register of Sanctioned Works</h2>
+      <p class="lead">Live data fetched from local MySQL database. Newly added works will appear right at the top.</p>
+    </div>
+    <div class="filters reveal">
+      <input id="fq" placeholder="Search by Project Code, Agency, Contractor, or District..." oninput="renderTable()">
+      <select id="fstate" onchange="renderTable()"></select>
+      <select id="frisk" onchange="renderTable()">
+        <option value="">All Risk Tiers</option>
+        <option value="High">High Risk (Requires Officer Review)</option>
+        <option value="Medium">Medium Risk (Watchlist)</option>
+        <option value="Low">Low Risk (Compliant)</option>
+      </select>
+      <select id="fstatus" onchange="renderTable()">
+        <option value="">All Case Statuses</option>
+        <option>Under review</option>
+        <option>Confirmed</option>
+        <option>Dismissed</option>
+        <option>Escalated</option>
+        <option>Resolved</option>
+      </select>
+    </div>
+    <div class="tablewrap reveal">
+      <table>
+        <thead><tr>
+          <th onclick="sortBy('id')">Work Code</th>
+          <th onclick="sortBy('name')">Work Description &amp; Department</th>
+          <th onclick="sortBy('state')">State</th>
+          <th onclick="sortBy('outlay')">Sanctioned (₹ Cr)</th>
+          <th onclick="sortBy('phys')">Physical (MB)</th>
+          <th onclick="sortBy('fin')">Disbursed</th>
+          <th onclick="sortBy('score')">Risk Score</th>
+          <th onclick="sortBy('status')">Case Status</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="tinfo">
+      <span id="tcount">Loading database records...</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="btn ghost" id="btnPrevPage" style="padding:6px 14px;font-size:12px" onclick="changePage(-1)">← Previous</button>
+        <span id="pageIndicator" class="mono" style="font-weight:600;font-size:13px">Page 1 of 1</span>
+        <button class="btn ghost" id="btnNextPage" style="padding:6px 14px;font-size:12px" onclick="changePage(1)">Next →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="brand" style="color:#fff"><div class="dot" style="background:#fff;color:var(--navy)">N</div>NIRIKSHANAI</div>
+    <p>National Public Works Monitoring &amp; Fund Governance System. Providing government authorities with reliable data to verify execution and protect public resources.</p>
+    <div style="margin-top:18px">
+      <a class="btn" style="background:#fff;color:var(--navy);font-size:13px;padding:9px 18px;border-radius:6px;font-weight:600;display:inline-flex;align-items:center;gap:8px" 
+         href="https://mail.google.com/mail/?view=cm&fs=1&to=mayankjangid515@gmail.com&su=NIRIKSHANAI%20Support%20Request&body=Officer%20Name:%0ADepartment:%0AWork%20Code%20(if%20applicable):%0A%0ADescription%20of%20Issue:%0A" 
+         target="_blank" 
+         rel="noopener noreferrer">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        Help &amp; Support Desk
+      </a>
+    </div>
+    <div class="rule">
+      <span>Official Government Monitoring System · Restricted Internal Environment</span>
+      <div style="display:flex;align-items:center;gap:14px">
+        <span class="mono">BUILD 2026.09</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- DOSSIER DETAILS MODAL -->
+<div class="overlay" id="ov" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<!-- OFFICER LOGIN POPUP MODAL -->
+<div class="overlay" id="authOverlay" onclick="if(event.target===this)closeLoginModal()">
+  <div class="auth-modal">
+    <div class="auth-head">
+      <span class="eyebrow" style="color:rgba(255,255,255,0.7)">Restricted Portal</span>
+      <h3>Officer Session Login</h3>
+    </div>
+    <form class="auth-body" onsubmit="handleOfficerLogin(event)">
+      <div>
+        <label for="auth_id">Officer ID / Badge Code</label>
+        <input type="text" id="auth_id" placeholder="e.g. OFF-8824" required autocomplete="username">
+      </div>
+      <div>
+        <label for="auth_dept">Department</label>
+        <select id="auth_dept">
+          <option value="PWD">Public Works Department (PWD)</option>
+          <option value="NHAI">National Highways Authority (NHAI)</option>
+          <option value="PHED">Public Health Engineering (PHED)</option>
+          <option value="H&FW">Health &amp; Family Welfare</option>
+          <option value="WRD">Water Resources Department</option>
+          <option value="FCI">Food Corporation of India</option>
+          <option value="BRO">Border Roads Organisation</option>
+        </select>
+      </div>
+      <div>
+        <label for="auth_pin">Security PIN / Password</label>
+        <input type="password" id="auth_pin" placeholder="Enter PIN (Default: 2026)" required autocomplete="current-password">
+      </div>
+      <div class="auth-msg" id="authError"></div>
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <button type="button" class="btn ghost" style="flex:1" onclick="closeLoginModal()">Cancel</button>
+        <button type="submit" class="btn" style="flex:1" id="btnLoginSubmit">Verify &amp; Enter</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
